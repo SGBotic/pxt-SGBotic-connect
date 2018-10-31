@@ -1,0 +1,14 @@
+{
+    "name": "pxt-SGBotic-connect",
+    "version": "1.0.0",
+    "description": "",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "ubit-connect.ts"
+    ],
+    "testFiles": [],
+    "public": true
+}

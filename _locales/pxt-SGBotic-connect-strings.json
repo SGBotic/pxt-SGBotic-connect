@@ -1,0 +1,17 @@
+{
+  "SGBotic.OnOffEnum.Off|block": "Off",
+  "SGBotic.OnOffEnum.On|block": "On",
+  "SGBotic.YesNoEnum.No|block": "No",
+  "SGBotic.YesNoEnum.Yes|block": "Yes",
+  "SGBotic.clearDisplay|block": "clear display",
+  "SGBotic.displayOnOff|block": "display %displayStat",
+  "SGBotic.initDisplay|block": "initialize display",
+  "SGBotic.inverseDisplay|block": "inverse display %inverse",
+  "SGBotic.setDisplayContrast|block": "set display contrast %contrast",
+  "SGBotic.setMosfetPower|block": "MOSFET driver output %mosfetPower",
+  "SGBotic.setTextXY|block": "move cursor to row %row| column %column",
+  "SGBotic.writeNumber|block": "write number %n",
+  "SGBotic.writeString|block": "write text %s",
+  "SGBotic|block": "SGBotic",
+  "{id:category}SGBotic": "SGBotic"
+}

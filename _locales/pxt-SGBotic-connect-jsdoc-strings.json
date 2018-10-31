@@ -1,0 +1,11 @@
+{
+  "SGBotic.clearDisplay": "Clears the whole display.",
+  "SGBotic.displayOnOff": "Turns the display on off.",
+  "SGBotic.initDisplay": "Initialize oled display",
+  "SGBotic.inverseDisplay": "set the display to normal or inverse.",
+  "SGBotic.setDisplayContrast": "Set display contrast.",
+  "SGBotic.setMosfetPower": "Set MOSFET driver output",
+  "SGBotic.setTextXY": "Move the cursor to new position.",
+  "SGBotic.writeNumber": "Writes number to the display.",
+  "SGBotic.writeString": "Writes a string to the display at the current cursor position."
+}
