@@ -25,16 +25,14 @@ namespace SGBotic {
         pins.i2cWriteNumber(i2caddr, c, NumberFormat.UInt16BE);
     }
     
-    let _buf2 = pins.createBuffer(2);
-    let _buf3 = pins.createBuffer(3);
-    let _buf4 = pins.createBuffer(4);
-
     function cmd1(d: number) {
         let n = d % 256;
         pins.i2cWriteNumber(i2caddr, n, NumberFormat.UInt16BE);
     }
 
     function cmd2(d1: number, d2: number) {
+        let _buf3 = pins.createBuffer(3);
+        
         _buf3[0] = 0;
         _buf3[1] = d1;
         _buf3[2] = d2;
@@ -42,6 +40,8 @@ namespace SGBotic {
     }
 
     function cmd3(d1: number, d2: number, d3: number) {
+        let _buf4 = pins.createBuffer(4);
+    
         _buf4[0] = 0;
         _buf4[1] = d1;
         _buf4[2] = d2;
@@ -118,10 +118,6 @@ namespace SGBotic {
     export function setTextXY(row: number, column: number) {
         let r = row;
         let c = column;
-        if (row < 0) { r = 0 }
-        if (column < 0) { c = 0 }
-        if (row > 7) { r = 7 }
-        if (column > 15) { c = 15 }
 
         cmd(0xB0 + r);            //set page address
         cmd(0x00 + (8 * c & 0x0F));  //set column lower address
