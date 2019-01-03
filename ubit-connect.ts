@@ -91,7 +91,7 @@ namespace SGBotic {
     //% block="clear display"
     export function clearDisplay() {
         cmd(DISPLAY_OFF);   //display off
-        for (let j = 0; j < 8; j++) {
+        for (let j = 0; j < 2; j++) {
             setTextXY(j, 0);
             {
                 for (let i = 0; i < 16; i++)  //clear all columns
