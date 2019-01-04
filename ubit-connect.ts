@@ -90,17 +90,21 @@ namespace SGBotic {
     //% blockId=oled96_clear_display
     //% block="clear display"
     export function clearDisplay() {
-        cmd(DISPLAY_OFF);   //display off
+        cmd(0xAE);   //display off
         for (let j = 0; j < 2; j++) {
             setTextXY(j, 0);
             {
                 for (let i = 0; i < 16; i++)  //clear all columns
                 {
-                    putChar(' ');
+                    //putChar(' ');
+                    for (let k = 0; k < 8; k++) {
+        
+                        pins.i2cWriteNumber(0x3c, 0x4000 + 0, NumberFormat.UInt16BE);
+                    }
                 }
             }
         }
-        cmd(DISPLAY_ON);    //display on
+        cmd(0xAF);    //display on
         setTextXY(0, 0);
     }
 
@@ -116,17 +120,18 @@ namespace SGBotic {
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
-        let r = row;
-        let c = column;
+       // let r = row;
+       // let c = column;
 
-        cmd(0xB0 + r);            //set page address
-        cmd(0x00 + (8 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
+        cmd(0xB0 + row);            //set page address
+        cmd(0x00 + (8 * column & 0x0F));  //set column lower address
+        cmd(0x10 + ((8 * column >> 4) & 0x0F));   //set column higher address
     }
 
     /**
      * Writes a single character to the display.
      */
+     /*
     function putChar(c: string) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
@@ -136,7 +141,7 @@ namespace SGBotic {
             writeCustomChar(basicFont[c1 - 32]);
         }
     }
-
+    */
     /**
      * Writes a string to the display at the current cursor position.
      */
@@ -146,7 +151,9 @@ namespace SGBotic {
     //% block="write text %s"
     export function writeString(s: string) {
         for (let c of s) {
-            putChar(c);
+            //putChar(c);
+            let c1 = c.charCodeAt(0);
+            writeCustomChar(basicFont[c1 - 32]);
         }
     }
 
@@ -166,21 +173,12 @@ namespace SGBotic {
     }
     
     
-    function writeData(n: number) {
-    
-        let b = n;
-        if (n < 0) { n = 0 }
-        if (n > 255) { n = 255 }
-
-        pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
-        
-    
-    }
-    
     
     function writeCustomChar(c: string) {
         for (let i = 0; i < 8; i++) {
-            writeData(c.charCodeAt(i));
+        
+           // writeData(c.charCodeAt(i));
+            pins.i2cWriteNumber(0x3c, 0x4000 + c.charCodeAt(i), NumberFormat.UInt16BE);
         }
     }
 
@@ -198,11 +196,11 @@ namespace SGBotic {
         pInverse = inverse
         if(pInverse === YesNoEnum.Yes)
         {
-           cmd(INVERT_DISPLAY);
+           cmd(0xA7); //INVERT_DISPLAY
       
         }else
         {
-           cmd(NORMAL_DISPLAY);
+           cmd(0xA6); //NORMAL_DISPLAY
         }
     }
     
@@ -217,15 +215,15 @@ namespace SGBotic {
     //% block="set display contrast %contrast"
     //% contrast.min=0 contrast.max=255
     export function setDisplayContrast(contrast: number) {
-        let b = contrast
-        if (b < 0) {
-            b = 0;
-        }
-        if (b > 255) {
-            b = 255;
-        }
-        cmd(0x81);
-        cmd(b);
+     //   let b = contrast
+     //   if (b < 0) {
+     //       b = 0;
+     //   }
+     //   if (b > 255) {
+     //       b = 255;
+     //   }
+        cmd(0x81);//SET_CONTRAST
+        cmd(contrast);
     }
 
     
@@ -241,11 +239,11 @@ namespace SGBotic {
         pDisplayStat = displayStat
         if(pDisplayStat === OnOffEnum.On)
         {
-           cmd(DISPLAY_ON); 
+           cmd(0xAF); //DISPLAY_ON
       
         }else
         {
-            cmd(DISPLAY_OFF);
+            cmd(0xAE); //DISPLAY_OFF
         }
     }
     
@@ -265,6 +263,7 @@ namespace SGBotic {
     
 }
 
+/*
 const DISPLAY_OFF = 0xAE;
 const DISPLAY_ON = 0xAF;
 const SET_DISPLAY_CLOCK_DIV = 0xD5;
@@ -293,6 +292,7 @@ const RIGHT_HORIZONTAL_SCROLL = 0x26;
 const LEFT_HORIZONTAL_SCROLL = 0x27;
 const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
+*/
 
 const basicFont: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "
