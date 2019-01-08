@@ -90,7 +90,7 @@ namespace SGBotic {
     //% blockId=oled96_clear_display
     //% block="clear display"
     export function clearDisplay() {
-        cmd(DISPLAY_OFF);   //display off
+        cmd(0xAE);   //display off
         for (let j = 0; j < 2; j++) {
             setTextXY(j, 0);
             {
@@ -100,7 +100,7 @@ namespace SGBotic {
                 }
             }
         }
-        cmd(DISPLAY_ON);    //display on
+        cmd(0xAF);    //display on
         setTextXY(0, 0);
     }
 
@@ -116,12 +116,12 @@ namespace SGBotic {
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
-        let r = row;
-        let c = column;
+        //let r = row;
+        //let c = column;
 
-        cmd(0xB0 + r);            //set page address
-        cmd(0x00 + (8 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
+        cmd(0xB0 + row);            //set page address
+        cmd(0x00 + (8 * column & 0x0F));  //set column lower address
+        cmd(0x10 + ((8 * column >> 4) & 0x0F));   //set column higher address
     }
 
     /**
@@ -198,11 +198,11 @@ namespace SGBotic {
         pInverse = inverse
         if(pInverse === YesNoEnum.Yes)
         {
-           cmd(INVERT_DISPLAY);
+           cmd(0xA7); //INVERT_DISPLAY
       
         }else
         {
-           cmd(NORMAL_DISPLAY);
+           cmd(0xA6); //NORMAL_DISPLAY
         }
     }
     
@@ -224,7 +224,7 @@ namespace SGBotic {
         if (b > 255) {
             b = 255;
         }
-        cmd(0x81);
+        cmd(0x81);  //SET_CONTRAST
         cmd(b);
     }
 
@@ -241,11 +241,11 @@ namespace SGBotic {
         pDisplayStat = displayStat
         if(pDisplayStat === OnOffEnum.On)
         {
-           cmd(DISPLAY_ON); 
+           cmd(0xAF); //DISPLAY_ON
       
         }else
         {
-            cmd(DISPLAY_OFF);
+            cmd(0xAE); //DISPLAY_OFF
         }
     }
     
@@ -265,34 +265,34 @@ namespace SGBotic {
     
 }
 
-const DISPLAY_OFF = 0xAE;
-const DISPLAY_ON = 0xAF;
-const SET_DISPLAY_CLOCK_DIV = 0xD5;
-const SET_MULTIPLEX = 0xA8;
-const SET_DISPLAY_OFFSET = 0xD3;
-const SET_START_LINE = 0x00;
-const CHARGE_PUMP = 0x8D;
-const EXTERNAL_VCC = false;
-const MEMORY_MODE = 0x20;
-const SEG_REMAP = 0xA1; // using 0xA0 will flip screen
-const COM_SCAN_DEC = 0xC8;
-const COM_SCAN_INC = 0xC0;
-const SET_COM_PINS = 0xDA;
-const SET_CONTRAST = 0x81;
-const SET_PRECHARGE = 0xd9;
-const SET_VCOM_DETECT = 0xDB;
-const DISPLAY_ALL_ON_RESUME = 0xA4;
-const NORMAL_DISPLAY = 0xA6;
-const COLUMN_ADDR = 0x21;
-const PAGE_ADDR = 0x22;
-const INVERT_DISPLAY = 0xA7;
-const ACTIVATE_SCROLL = 0x2F;
-const DEACTIVATE_SCROLL = 0x2E;
-const SET_VERTICAL_SCROLL_AREA = 0xA3;
-const RIGHT_HORIZONTAL_SCROLL = 0x26;
-const LEFT_HORIZONTAL_SCROLL = 0x27;
-const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
-const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
+//const DISPLAY_OFF = 0xAE;
+//const DISPLAY_ON = 0xAF;
+//const SET_DISPLAY_CLOCK_DIV = 0xD5;
+//const SET_MULTIPLEX = 0xA8;
+//const SET_DISPLAY_OFFSET = 0xD3;
+//const SET_START_LINE = 0x00;
+//const CHARGE_PUMP = 0x8D;
+//const EXTERNAL_VCC = false;
+//const MEMORY_MODE = 0x20;
+//const SEG_REMAP = 0xA1; // using 0xA0 will flip screen
+//const COM_SCAN_DEC = 0xC8;
+//const COM_SCAN_INC = 0xC0;
+//const SET_COM_PINS = 0xDA;
+//const SET_CONTRAST = 0x81;
+//const SET_PRECHARGE = 0xd9;
+//const SET_VCOM_DETECT = 0xDB;
+//const DISPLAY_ALL_ON_RESUME = 0xA4;
+//const NORMAL_DISPLAY = 0xA6;
+//const COLUMN_ADDR = 0x21;
+//const PAGE_ADDR = 0x22;
+//const INVERT_DISPLAY = 0xA7;
+//const ACTIVATE_SCROLL = 0x2F;
+//const DEACTIVATE_SCROLL = 0x2E;
+//const SET_VERTICAL_SCROLL_AREA = 0xA3;
+//const RIGHT_HORIZONTAL_SCROLL = 0x26;
+//const LEFT_HORIZONTAL_SCROLL = 0x27;
+//const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
+//const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
 const basicFont: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "
