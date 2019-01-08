@@ -7,6 +7,7 @@
         "core": "*"
     },
     "files": [
+        "README.md",
         "ubit-connect.ts"
     ],
     "testFiles": [],
