@@ -94,20 +94,20 @@ namespace SGBotic {
     //% block="clear display"
     export function clearDisplay() {
         cmd(0xAE);   //display off
-        for (let j = 0; j < 8; j++) {
-            setTextXY(j, 0);
+      //  for (let j = 0; j < 8; j++) {
+      //      setTextXY(j, 0);
            
-                for (let i = 0; i < 16; i++)  //clear all columns
-                {
-                    putChar(' ');
-                }
+      //          for (let i = 0; i < 16; i++)  //clear all columns
+      //          {
+      //              putChar(' ');
+      //          }
           
-        }
+      //  }
        
-      // setTextXY(0, 0);
-      // _displaybuffer.fill(0)
-      // _displaybuffer[0] = 0x40
-     //  pins.i2cWriteBuffer(i2caddr, _displaybuffer)
+       setTextXY(0, 0);
+       _displaybuffer.fill(0)
+       _displaybuffer[0] = 0x40
+       pins.i2cWriteBuffer(i2caddr, _displaybuffer)
         cmd(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
@@ -135,6 +135,7 @@ namespace SGBotic {
     /**
      * Writes a single character to the display.
      */
+     /*
     function putChar(c: string) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
@@ -144,7 +145,8 @@ namespace SGBotic {
             writeCustomChar(basicFont[c1 - 32]);
         }
     }
-    
+    */
+    /*
        
     function writeCustomChar(c: string) {
         for (let i = 0; i < 8; i++) {
@@ -155,7 +157,7 @@ namespace SGBotic {
     }
 
 
-
+*/
 
 
     /**
@@ -166,9 +168,28 @@ namespace SGBotic {
     //% blockId=oled96_write_string
     //% block="write text %s"
     export function writeString(s: string) {
-        for (let c of s) {
-            putChar(c);
+        let c1 = 0
+        let f: string
+        let b: number
+        let count = 1
+        let _buffer = pins.createBuffer(s.length * 8);
+        
+        //for (let c of s) {
+        //    putChar(c);
+        //}
+        
+        for(let n=0; n<s.length; n++){
+            c1 = s.charCodeAt(n);
+            f = basicFont[c1 - 32]    
+            for (let i = 0; i < 8; i++) {
+                b = f.charCodeAt(i)
+                _buffer[count] = b
+                count = count + 1;
+                
+            }
         }
+        _buffer[0] = 0x40
+        pins.i2cWriteBuffer(i2caddr, _buffer)
     }
 
 
@@ -186,7 +207,7 @@ namespace SGBotic {
         writeString(s)
     }
     
-    
+    /*
     function writeData(n: number) {
     
         let b = n;
@@ -194,10 +215,8 @@ namespace SGBotic {
         //if (n > 255) { n = 255 }
 
         pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
-        
-    
     }
-    
+    */
  
     /**
      * set the display to normal or inverse.
