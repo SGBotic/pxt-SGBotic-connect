@@ -20,7 +20,7 @@ namespace SGBotic {
         No = 0
     }
     
-    let _displaybuffer = pins.createBuffer(1024);
+    let _displaybuffer = pins.createBuffer(512);
     let _buf3 = pins.createBuffer(3);
     let _buf4 = pins.createBuffer(4);
     
@@ -108,6 +108,7 @@ namespace SGBotic {
        _displaybuffer.fill(0)
        _displaybuffer[0] = 0x40
        pins.i2cWriteBuffer(i2caddr, _displaybuffer)
+      
         cmd1(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
