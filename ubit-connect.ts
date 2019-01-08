@@ -93,7 +93,7 @@ namespace SGBotic {
     //% blockId=oled96_clear_display
     //% block="clear display"
     export function clearDisplay() {
-        cmd1(0xAE);   //display off
+      //  cmd1(0xAE);   //display off
       //  for (let j = 0; j < 8; j++) {
       //      setTextXY(j, 0);
            
@@ -109,8 +109,8 @@ namespace SGBotic {
        _displaybuffer[0] = 0x40
        pins.i2cWriteBuffer(i2caddr, _displaybuffer)
       
-        cmd1(0xAF); //DISPLAY_ON
-        setTextXY(0, 0);
+       // cmd1(0xAF); //DISPLAY_ON
+      //  setTextXY(0, 0);
     }
 
    
