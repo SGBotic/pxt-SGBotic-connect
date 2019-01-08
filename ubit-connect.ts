@@ -20,6 +20,9 @@ namespace SGBotic {
         No = 0
     }
     
+    let _displaybuffer = pins.createBuffer(1025);
+    let _buf3 = pins.createBuffer(3);
+    let _buf4 = pins.createBuffer(4);
     
     function cmd(c: number) {
         pins.i2cWriteNumber(i2caddr, c, NumberFormat.UInt16BE);
@@ -31,7 +34,7 @@ namespace SGBotic {
     }
 
     function cmd2(d1: number, d2: number) {
-        let _buf3 = pins.createBuffer(3);
+        
         
         _buf3[0] = 0;
         _buf3[1] = d1;
@@ -40,7 +43,7 @@ namespace SGBotic {
     }
 
     function cmd3(d1: number, d2: number, d3: number) {
-        let _buf4 = pins.createBuffer(4);
+        
     
         _buf4[0] = 0;
         _buf4[1] = d1;
@@ -91,15 +94,20 @@ namespace SGBotic {
     //% block="clear display"
     export function clearDisplay() {
         cmd(0xAE);   //display off
-        for (let j = 0; j < 4; j++) {
-            setTextXY(j, 0);
-            {
-                for (let i = 0; i < 16; i++)  //clear all columns
-                {
-                    putChar(' ');
-                }
-            }
-        }
+        //for (let j = 0; j < 8; j++) {
+        //    setTextXY(j, 0);
+        //    {
+        //        for (let i = 0; i < 16; i++)  //clear all columns
+         //       {
+         //           putChar(' ');
+         //       }
+         //   }
+        //}
+       
+       setTextXY(0, 0);
+       _displaybuffer.fill(0)
+       _displaybuffer[0] = 0x40
+       pins.i2cWriteBuffer(i2caddr, _displaybuffer)
         cmd(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
@@ -136,6 +144,19 @@ namespace SGBotic {
             writeCustomChar(basicFont[c1 - 32]);
         }
     }
+    
+       
+    function writeCustomChar(c: string) {
+        for (let i = 0; i < 8; i++) {
+            //writeData(c.charCodeAt(i));
+            let b = c.charCodeAt(i)
+            pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
+        }
+    }
+
+
+
+
 
     /**
      * Writes a string to the display at the current cursor position.
@@ -169,22 +190,15 @@ namespace SGBotic {
     function writeData(n: number) {
     
         let b = n;
-        if (n < 0) { n = 0 }
-        if (n > 255) { n = 255 }
+       // if (n < 0) { n = 0 }
+        //if (n > 255) { n = 255 }
 
         pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
         
     
     }
     
-    
-    function writeCustomChar(c: string) {
-        for (let i = 0; i < 8; i++) {
-            writeData(c.charCodeAt(i));
-        }
-    }
-
-
+ 
     /**
      * set the display to normal or inverse.
      */
