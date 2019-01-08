@@ -94,20 +94,20 @@ namespace SGBotic {
     //% block="clear display"
     export function clearDisplay() {
         cmd(0xAE);   //display off
-        //for (let j = 0; j < 8; j++) {
-        //    setTextXY(j, 0);
-        //    {
-        //        for (let i = 0; i < 16; i++)  //clear all columns
-         //       {
-         //           putChar(' ');
-         //       }
-         //   }
-        //}
+        for (let j = 0; j < 8; j++) {
+            setTextXY(j, 0);
+           
+                for (let i = 0; i < 16; i++)  //clear all columns
+                {
+                    putChar(' ');
+                }
+          
+        }
        
-       setTextXY(0, 0);
-       _displaybuffer.fill(0)
-       _displaybuffer[0] = 0x40
-       pins.i2cWriteBuffer(i2caddr, _displaybuffer)
+      // setTextXY(0, 0);
+      // _displaybuffer.fill(0)
+      // _displaybuffer[0] = 0x40
+     //  pins.i2cWriteBuffer(i2caddr, _displaybuffer)
         cmd(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
@@ -120,7 +120,7 @@ namespace SGBotic {
      //% subcategory=ubit-Connect
     //% weight=85 blockExternalInputs=true blockGap=8
     //% blockId=oled96_set_text
-    //% row.min=0 row.max=1
+    //% row.min=0 row.max=2
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
