@@ -120,7 +120,7 @@ namespace SGBotic {
      //% subcategory=ubit-Connect
     //% weight=85 blockExternalInputs=true blockGap=8
     //% blockId=oled96_set_text
-    //% row.min=0 row.max=2
+    //% row.min=0 row.max=3
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
