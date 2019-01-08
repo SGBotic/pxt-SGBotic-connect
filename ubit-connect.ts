@@ -20,13 +20,13 @@ namespace SGBotic {
         No = 0
     }
     
-    let _displaybuffer = pins.createBuffer(1025);
+    let _displaybuffer = pins.createBuffer(64);
     let _buf3 = pins.createBuffer(3);
     let _buf4 = pins.createBuffer(4);
     
-    function cmd(c: number) {
-        pins.i2cWriteNumber(i2caddr, c, NumberFormat.UInt16BE);
-    }
+  //  function cmd(c: number) {
+   //     pins.i2cWriteNumber(i2caddr, c, NumberFormat.UInt16BE);
+   // }
     
     function cmd1(d: number) {
         let n = d % 256;
@@ -93,7 +93,7 @@ namespace SGBotic {
     //% blockId=oled96_clear_display
     //% block="clear display"
     export function clearDisplay() {
-        cmd(0xAE);   //display off
+        cmd1(0xAE);   //display off
       //  for (let j = 0; j < 8; j++) {
       //      setTextXY(j, 0);
            
@@ -108,7 +108,7 @@ namespace SGBotic {
        _displaybuffer.fill(0)
        _displaybuffer[0] = 0x40
        pins.i2cWriteBuffer(i2caddr, _displaybuffer)
-        cmd(0xAF); //DISPLAY_ON
+        cmd1(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
 
@@ -127,9 +127,12 @@ namespace SGBotic {
         let r = row;
         let c = column;
 
-        cmd(0xB0 + r);            //set page address
-        cmd(0x00 + (8 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
+        //cmd(0xB0 + r);            //set page address
+        //cmd(0x00 + (8 * c & 0x0F));  //set column lower address
+        //cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
+        cmd1(0xb0 | r) // page number
+        cmd1(0x00 | (c % 16)) // lower start column address
+        cmd1(0x10 | (c >> 4)) // upper start column address   
     }
 
     /**
@@ -231,11 +234,11 @@ namespace SGBotic {
         pInverse = inverse
         if(pInverse === YesNoEnum.Yes)
         {
-           cmd(0xA7); //INVERT_DISPLAY
+           cmd1(0xA7); //INVERT_DISPLAY
       
         }else
         {
-           cmd(0xA6); //NORMAL_DISPLAY
+           cmd1(0xA6); //NORMAL_DISPLAY
         }
     }
     
@@ -257,8 +260,8 @@ namespace SGBotic {
        // if (b > 255) {
        //     b = 255;
        // }
-        cmd(0x81);
-        cmd(b);
+        cmd1(0x81);
+        cmd1(b);
     }
 
     
@@ -274,11 +277,11 @@ namespace SGBotic {
         pDisplayStat = displayStat
         if(pDisplayStat === OnOffEnum.On)
         {
-           cmd(0xAF); //DISPLAY_ON
+           cmd1(0xAF); //DISPLAY_ON
       
         }else
         {
-            cmd(0xAE); //DISPLAY_OFF
+            cmd1(0xAE); //DISPLAY_OFF
         }
     }
     
