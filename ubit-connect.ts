@@ -91,7 +91,7 @@ namespace SGBotic {
     //% block="clear display"
     export function clearDisplay() {
         cmd(0xAE);   //display off
-        for (let j = 0; j < 2; j++) {
+        for (let j = 0; j < 4; j++) {
             setTextXY(j, 0);
             {
                 for (let i = 0; i < 16; i++)  //clear all columns
@@ -100,7 +100,7 @@ namespace SGBotic {
                 }
             }
         }
-        cmd(0xAF);    //display on
+        cmd(0xAF); //DISPLAY_ON
         setTextXY(0, 0);
     }
 
@@ -116,12 +116,12 @@ namespace SGBotic {
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
-        //let r = row;
-        //let c = column;
+        let r = row;
+        let c = column;
 
-        cmd(0xB0 + row);            //set page address
-        cmd(0x00 + (8 * column & 0x0F));  //set column lower address
-        cmd(0x10 + ((8 * column >> 4) & 0x0F));   //set column higher address
+        cmd(0xB0 + r);            //set page address
+        cmd(0x00 + (8 * c & 0x0F));  //set column lower address
+        cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
     }
 
     /**
@@ -218,13 +218,13 @@ namespace SGBotic {
     //% contrast.min=0 contrast.max=255
     export function setDisplayContrast(contrast: number) {
         let b = contrast
-        if (b < 0) {
-            b = 0;
-        }
-        if (b > 255) {
-            b = 255;
-        }
-        cmd(0x81);  //SET_CONTRAST
+       // if (b < 0) {
+       //     b = 0;
+        //}
+       // if (b > 255) {
+       //     b = 255;
+       // }
+        cmd(0x81);
         cmd(b);
     }
 
