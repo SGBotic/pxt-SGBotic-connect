@@ -20,7 +20,7 @@ namespace SGBotic {
         No = 0
     }
     
-    let _displaybuffer = pins.createBuffer(512);
+    let _displaybuffer = pins.createBuffer(1024);
     let _buf3 = pins.createBuffer(3);
     let _buf4 = pins.createBuffer(4);
     
