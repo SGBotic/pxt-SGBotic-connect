@@ -4,8 +4,7 @@ namespace SGBotic {
     let i2caddr: number
     let mosfetPowerValue: number
     
-    export enum OnOffEnum{
-    
+    export enum OnOffEnum{ 
         //%block="On"
         On = 1,
         //%block="Off"
@@ -13,20 +12,15 @@ namespace SGBotic {
     }
     
     export enum YesNoEnum{
-    
         //%block="Yes"
         Yes = 1,
         //%block="No"
         No = 0
     }
     
-    let _displaybuffer = pins.createBuffer(512);
+    let _displaybuffer = pins.createBuffer(600);
     let _buf3 = pins.createBuffer(3);
     let _buf4 = pins.createBuffer(4);
-    
-  //  function cmd(c: number) {
-   //     pins.i2cWriteNumber(i2caddr, c, NumberFormat.UInt16BE);
-   // }
     
     function cmd1(d: number) {
         let n = d % 256;
@@ -34,8 +28,6 @@ namespace SGBotic {
     }
 
     function cmd2(d1: number, d2: number) {
-        
-        
         _buf3[0] = 0;
         _buf3[1] = d1;
         _buf3[2] = d2;
@@ -43,15 +35,12 @@ namespace SGBotic {
     }
 
     function cmd3(d1: number, d2: number, d3: number) {
-        
-    
         _buf4[0] = 0;
         _buf4[1] = d1;
         _buf4[2] = d2;
         _buf4[3] = d3;
         pins.i2cWriteBuffer(i2caddr, _buf4);
     }
-    
     
     
     /**
@@ -63,7 +52,7 @@ namespace SGBotic {
     //% block="initialize display"
     export function initDisplay(): void {
         i2caddr = 0x3c
-       cmd1(0xAE)       // SSD1306_DISPLAYOFF
+        cmd1(0xAE)       // SSD1306_DISPLAYOFF
         cmd1(0xA4)       // SSD1306_DISPLAYALLON_RESUME
         cmd2(0xD5, 0xF0) // SSD1306_SETDISPLAYCLOCKDIV
         cmd2(0xA8, 0x3F) // SSD1306_SETMULTIPLEX
@@ -92,25 +81,11 @@ namespace SGBotic {
     //% weight=95 blockGap=8
     //% blockId=oled96_clear_display
     //% block="clear display"
-    export function clearDisplay() {
-      //  cmd1(0xAE);   //display off
-      //  for (let j = 0; j < 8; j++) {
-      //      setTextXY(j, 0);
-           
-      //          for (let i = 0; i < 16; i++)  //clear all columns
-      //          {
-      //              putChar(' ');
-      //          }
-          
-      //  }
-       
+    export function clearDisplay() {    
        setTextXY(0, 0);
        _displaybuffer.fill(0)
        _displaybuffer[0] = 0x40
        pins.i2cWriteBuffer(i2caddr, _displaybuffer)
-      
-       // cmd1(0xAF); //DISPLAY_ON
-      //  setTextXY(0, 0);
     }
 
    
@@ -125,43 +100,18 @@ namespace SGBotic {
      //% column.min=0 column.max=15
     //% block="move cursor to row %row| column %column"
     export function setTextXY(row: number, column: number) {
+        
         let r = row;
         let c = column;
-
-        //cmd(0xB0 + r);            //set page address
-        //cmd(0x00 + (8 * c & 0x0F));  //set column lower address
-        //cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
-        cmd1(0xb0 | r) // page number
-        cmd1(0x00 | (c % 16)) // lower start column address
-        cmd1(0x10 | (c >> 4)) // upper start column address   
+        
+        pins.i2cWriteNumber(i2caddr, (0xb0 | r) % 256, NumberFormat.UInt16BE);
+        pins.i2cWriteNumber(i2caddr, (0x00 | (c % 16)) % 256, NumberFormat.UInt16BE);
+        pins.i2cWriteNumber(i2caddr, (0x10 | (c >> 4)) % 256, NumberFormat.UInt16BE);
+      
+      //cmd1(0xb0 | r) // page number
+      //  cmd1(0x00 | (c % 16)) // lower start column address
+      //  cmd1(0x10 | (c >> 4)) // upper start column address   
     }
-
-    /**
-     * Writes a single character to the display.
-     */
-     /*
-    function putChar(c: string) {
-        let c1 = c.charCodeAt(0);
-        if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
-        {
-            writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
-        } else {
-            writeCustomChar(basicFont[c1 - 32]);
-        }
-    }
-    */
-    /*
-       
-    function writeCustomChar(c: string) {
-        for (let i = 0; i < 8; i++) {
-            //writeData(c.charCodeAt(i));
-            let b = c.charCodeAt(i)
-            pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
-        }
-    }
-
-
-*/
 
 
     /**
@@ -178,18 +128,13 @@ namespace SGBotic {
         let count = 1
         let _buffer = pins.createBuffer(s.length * 8);
         
-        //for (let c of s) {
-        //    putChar(c);
-        //}
-        
         for(let n=0; n<s.length; n++){
             c1 = s.charCodeAt(n);
             f = basicFont[c1 - 32]    
             for (let i = 0; i < 8; i++) {
                 b = f.charCodeAt(i)
                 _buffer[count] = b
-                count = count + 1;
-                
+                count = count + 1; 
             }
         }
         _buffer[0] = 0x40
@@ -205,22 +150,13 @@ namespace SGBotic {
     //% blockId=oled96_write_number
     //% block="write number %n"
     export function writeNumber(n: number) {
-    
         let s:string
+        
         s=n.toString()
         writeString(s)
     }
     
-    /*
-    function writeData(n: number) {
-    
-        let b = n;
-       // if (n < 0) { n = 0 }
-        //if (n > 255) { n = 255 }
 
-        pins.i2cWriteNumber(0x3c, 0x4000 + b, NumberFormat.UInt16BE);
-    }
-    */
  
     /**
      * set the display to normal or inverse.
@@ -255,12 +191,7 @@ namespace SGBotic {
     //% contrast.min=0 contrast.max=255
     export function setDisplayContrast(contrast: number) {
         let b = contrast
-       // if (b < 0) {
-       //     b = 0;
-        //}
-       // if (b > 255) {
-       //     b = 255;
-       // }
+ 
         cmd1(0x81);
         cmd1(b);
     }
@@ -298,38 +229,7 @@ namespace SGBotic {
         mosfetPowerValue = (mosfetPowerValue * 1023) / 100
         pins.analogWritePin(AnalogPin.P16, mosfetPowerValue)
     }   
-    
-    
 }
-
-//const DISPLAY_OFF = 0xAE;
-//const DISPLAY_ON = 0xAF;
-//const SET_DISPLAY_CLOCK_DIV = 0xD5;
-//const SET_MULTIPLEX = 0xA8;
-//const SET_DISPLAY_OFFSET = 0xD3;
-//const SET_START_LINE = 0x00;
-//const CHARGE_PUMP = 0x8D;
-//const EXTERNAL_VCC = false;
-//const MEMORY_MODE = 0x20;
-//const SEG_REMAP = 0xA1; // using 0xA0 will flip screen
-//const COM_SCAN_DEC = 0xC8;
-//const COM_SCAN_INC = 0xC0;
-//const SET_COM_PINS = 0xDA;
-//const SET_CONTRAST = 0x81;
-//const SET_PRECHARGE = 0xd9;
-//const SET_VCOM_DETECT = 0xDB;
-//const DISPLAY_ALL_ON_RESUME = 0xA4;
-//const NORMAL_DISPLAY = 0xA6;
-//const COLUMN_ADDR = 0x21;
-//const PAGE_ADDR = 0x22;
-//const INVERT_DISPLAY = 0xA7;
-//const ACTIVATE_SCROLL = 0x2F;
-//const DEACTIVATE_SCROLL = 0x2E;
-//const SET_VERTICAL_SCROLL_AREA = 0xA3;
-//const RIGHT_HORIZONTAL_SCROLL = 0x26;
-//const LEFT_HORIZONTAL_SCROLL = 0x27;
-//const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
-//const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
 const basicFont: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "
